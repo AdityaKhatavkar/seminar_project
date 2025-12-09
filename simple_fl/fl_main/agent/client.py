@@ -273,6 +273,9 @@ class Client:
         else:  # Keep the training results
             # Send models
             self.setup_sending_models(models, num_samples, perf_value)
+            # models is the set of model parameters that the client learned after local training.
+            # num_samples : the number of training samples the client used during local training.
+            # perf_value : is the local performance metric of the trained model.
 
     def setup_sending_models(self, models, num_samples, perf_val):
         """

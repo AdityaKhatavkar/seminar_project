@@ -53,7 +53,8 @@ def main(agent_name):
         local_perf = compute_performance(new_models, prep_test_data())
 
         # Send model update
-        fl_client.send_trained_model(new_models, model_id=1, performance=local_perf)
+        #fl_client.send_trained_model(new_models, model_id=1, performance=local_perf)
+        fl_client.send_trained_model(new_models, 1, local_perf)
 
     logging.info("--- FL client terminated ---")
 
