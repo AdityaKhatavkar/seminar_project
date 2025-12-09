@@ -9,7 +9,6 @@ from werkzeug.security  import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy 
 from authlib.integrations.flask_client import OAuth
 from ip2geotools.databases.noncommercial import DbIpCity #ip --> location
-from fl_main.agent.api_key_file import *
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -21,14 +20,16 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
+from dotenv import load_dotenv
+load_dotenv()
 
 #auth
 oauth = OAuth(app)
 
 google = oauth.register(
     name='google',
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
+    client_id = os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET"),
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
     #authorize_url='https://accounts.google.com/o/oauth2/auth',
     #access_token_url='https://oauth2.googleapis.com/token',
