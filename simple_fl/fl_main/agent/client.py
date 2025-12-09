@@ -1,3 +1,4 @@
+#client.py
 import asyncio
 import time
 import logging
@@ -35,9 +36,16 @@ class Client:
 
         # Check command line argvs
         self.simulation_flag = False
+        """ check the run is in simulated version or real version
+        """
         if len(sys.argv) > 1:
-            # if sys.argv[1] == '1', it's in simulation mode
-            self.simulation_flag = bool(int(sys.argv[1]))
+            arg = sys.argv[1].strip()
+
+            # Simulation only if EXACT match "1"
+            if arg == "1":
+                self.simulation_flag = True
+            else:
+                self.simulation_flag = False
 
         # Read config
         config_file = set_config_file("agent")

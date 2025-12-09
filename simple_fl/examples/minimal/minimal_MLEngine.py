@@ -1,9 +1,10 @@
+#minimal_MLEngine.py
 import numpy as np
 import time
 import logging
 import sys
 from typing import Dict
-
+#S
 from fl_main.agent.client import Client
 
 def init_models() -> Dict[str,np.array]:
@@ -94,6 +95,8 @@ if __name__ == '__main__':
     fl_client = Client()
     logging.info(f'--- Your IP is {fl_client.agent_ip} ---')
 
+    """Actually we should receive the template model, instead of training it from scratch.
+    so initial_modle = receive_template_model() something like this."""
     # Create a set of template models (to tell the shapes)
     initial_models = training(dict(), init_flag=True)
 
