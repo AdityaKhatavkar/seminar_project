@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | Temperature Forecast</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+    <script>
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.add("dark");
+        }
+    </script>
+</head>
+
+<body>
+
+<header>
+    <div class="nav-left">
+        <i class="fas fa-cloud-sun"></i>
+        <h1>Temperature Forecast</h1>
+    </div>
+    <button id="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+</header>
+
+<!-- CARD -->
+<div class="container">
+    <div class="weather-card">
+
+        <h2><i class="fas fa-user-circle"></i> Login / Register</h2>
+        <p class="subtitle">Welcome! Authenticate to continue</p>
+
+        <!-- FORM -->
+        <form id="auth_form" action="{{ url_for('login')}}" method="POST">
+
+            <label>Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label>Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <input type="hidden" name="location" id="locationField">
+
+            <div style="margin-top: 1rem; display:flex; gap:1rem; flex-wrap:wrap;">
+                <input type="submit" value="Login" class="primary-btn" onclick="setactionform('login')">
+
+                <input type="button" value="Register" class="secondary-btn" onclick="setactionform('register')">
+
+                <input type="button" value="Login with Google" class="primary-btn" id="googleBtn">
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Temperature Forecasting</p>
+</footer>
+
+
+<script>
+    // --- GEOLOCATION ---
+    navigator.geolocation.getCurrentPosition(pos => {
+        const loc = pos.coords.latitude + "," + pos.coords.longitude;
+
+        document.getElementById("locationField").value = loc;
+
+        fetch("/save_location", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ location: loc })
+        });
+
+    }, err => {
+
+        document.getElementById("locationField").value = "unknown";
+
+        fetch("/save_location", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ location: "unknown" })
+        });
+    });
+
+
+    // --- LOGIN vs REGISTER ---
+    function setactionform(action) {
+        let form = document.getElementById('auth_form');
+
+        if (action === "login") {
+            form.action = "{{ url_for('login') }}";
+            form.submit();
+        }
+        else if (action === "register") {
+            form.action = "{{ url_for('register') }}";
+            form.submit();
+        }
+    }
+
+    document.getElementById("googleBtn").onclick = function() {
+        window.location.href = "{{ url_for('login_google') }}";
+    }
+</script>
+
+<script src="{{ url_for('static', filename='theme_toggle.js') }}"></script>
+
+</body>
+</html>

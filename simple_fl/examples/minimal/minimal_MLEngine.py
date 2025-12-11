@@ -4,8 +4,10 @@ import time
 import logging
 import sys
 from typing import Dict
-#S
 from fl_main.agent.client import Client
+
+def download_data(parameter1):
+    pass
 
 def init_models() -> Dict[str,np.array]:
     """
@@ -13,6 +15,8 @@ def init_models() -> Dict[str,np.array]:
     The models need not to be trained
     :return: Dict[str,np.array]
     """
+    data = download_data()
+    
     models = dict()
     models['model1'] = np.array([[1, 2, 3], [4, 5, 6]])
     models['model2'] = np.array([[1, 2], [3, 4]])
@@ -91,6 +95,8 @@ def prep_test_data():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logging.info('--- This is a minimal example ---')
+    
+    
 
     fl_client = Client()
     logging.info(f'--- Your IP is {fl_client.agent_ip} ---')

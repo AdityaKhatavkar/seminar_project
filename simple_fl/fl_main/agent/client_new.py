@@ -73,7 +73,7 @@ def get_ip_location(): # ip-->location(lat & long) function
 
 
 #starting swap client_runner.py
-def spawn_fl_client_process(agent_name: str) -> int:
+def spawn_fl_client_process(agent_name: str, location ) -> int:
     """
     Spawn client_runner.py as a background process.
     Returns the process PID.
@@ -140,7 +140,7 @@ def list_clients():
 def home():
     if "username" in session : 
         return redirect(url_for("dashboard"))
-    return render_template("home_extends.html")
+    return render_template("login.html")
 
 
 # Login
@@ -152,17 +152,15 @@ def login():
     location = request.form.get("location", "unknown")
     #location = session.get("location")
 
-
     if not location or location == "unknown":
         location = get_ip_location()
-
 
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         session['username'] = username
         return redirect(url_for("dashboard"))
     else:
-        return redirect(url_for("home"))
+        return render_template("login.html", error="Invalid credentials") 
     
 
 # Register
@@ -240,13 +238,16 @@ def authorize_google():
     session['username']=username
     session['oauth_token'] = token
 
+    
+
+
     #start fl client process : 
     try: 
-        pid = spawn_fl_client_process(username)
+        pid = spawn_fl_client_process(username, location)
         user.fl_pid = pid
         db.session.commit()
-        app.logger.info(f"started fl client for user: {username} with pid: {pid} ")
-        print(f"started fl client for user: {username} with pid: {pid} ")
+        app.logger.info(f"started fl client for user: {username} with pid: {pid} for location {location}")
+        print(f"started fl client for user: {username} with pid: {pid} for locaiton {location}")
     
     except Exception as e:
         app.logger.info(f"Error starting fl client process for user: {username} with pid: {pid}")
@@ -265,6 +266,8 @@ def login_google():
         print("Hello check ")
         app.logger.error(f"Error during login : str{e}")
         return  "Error occured during login"   , 500 
+    
+    # ============================== once logged in =========================== #
     
     
         
